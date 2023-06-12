@@ -1,0 +1,56 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests with pytest
+        run: |
+          python restapi_tests.py
+          exit_code=$?
+          exit $exit_code
+
+      - name: Retrieve Allure history
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: allure-history
+
+      - name: Generate Allure report
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.14.0/allure-2.14.0.tgz
+          tar -zxvf allure-2.14.0.tgz
+          export PATH="$(pwd)/allure-2.14.0/bin:$PATH"
+          allure --version
+          allure generate --clean -o allure-report ./allure-results
+
+      - name: Generate Allure report (GitHub)
+        uses: simple-elf/allure-report-action@master
+        with:
+          version: 2.x
+          results: allure-results
+
+      - name: Deploy report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.MY_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
