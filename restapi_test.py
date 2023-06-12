@@ -16,7 +16,7 @@ class LoginAndRegistrationTests(unittest.TestCase):
     @description("Test successful registration of a user")
     def test_successful_registration(self):
         payload = {"name": "Test",
-                   "email": "random_test_user6@test.com", "password": "123GGG"}
+                   "email": "testtest001@test.com", "password": "123GGG"}
         response = requests.post(
             f"{BASE_URL}/AuthAccount/Registration", json=payload)
         self.assertEqual(response.status_code, 200)
@@ -124,7 +124,7 @@ class GetTouristEndpointTests(unittest.TestCase):
         payload = {
             "id": 17,
             "tourist_name": "James Bond",
-            "tourist_email": "jamesbond@test.com",
+            "tourist_email": "jamesbondtest@test.com",
             "tourist_location": "London",
             "createdat": "2023-06-12T18:59:56.868Z"
         }
@@ -143,15 +143,15 @@ class GetTouristEndpointTests(unittest.TestCase):
         payload = {
             "id": 19,
             "tourist_name": "James Bond 007",
-            "tourist_email": "jamesbondsecond@test.com",
+            "tourist_email": "jamesbondtest1@test.com",
             "tourist_location": "London",
             "createdat": "2023-06-12T18:59:56.868Z"
         }
         create_response = requests.post(f"{BASE_URL}/Tourist", json=payload)
         assert create_response.status_code == 201
         # retrieve tourist id
-        tourist_id = create_response.json()['id']
-        get_response = requests.get(f"{BASE_URL}/Tourist/{1}")
+        tourist_id = 1
+        get_response = requests.get(f"{BASE_URL}/Tourist/{tourist_id}")
         assert get_response.status_code == 404
         print(get_response.json())
 
@@ -159,5 +159,6 @@ class GetTouristEndpointTests(unittest.TestCase):
     @title("Unsuccessfully retrieve a tourist with invalid id")
     @description("Test unsuccessfully retrieves a tourist with invalid id")
     def test_get_tourist_by_invalidid(self):
-        response = requests.get(f"{BASE_URL}/Tourist/{djfk2}")
+        tourist_id = "djfk2"
+        response = requests.get(f"{BASE_URL}/Tourist/{tourist_id}")
         assert response.status_code == 404
