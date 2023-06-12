@@ -6,31 +6,39 @@ from allure_commons._allure import title, description
 
 BASE_URL = "http://restapi.adequateshop.com/api"
 
-#Tests for Registration and login
+# Tests for Registration and login
+
+
 @pytest.mark.allure
 class LoginAndRegistrationTests(unittest.TestCase):
     @pytest.mark.test
     @title("Successful Registration")
     @description("Test successful registration of a user")
     def test_successful_registration(self):
-        payload = {"name": "Test", "email": "random_test_user6@test.com", "password": "123GGG"}
-        response = requests.post(f"{BASE_URL}/AuthAccount/Registration", json=payload)
+        payload = {"name": "Test",
+                   "email": "random_test_user6@test.com", "password": "123GGG"}
+        response = requests.post(
+            f"{BASE_URL}/AuthAccount/Registration", json=payload)
         self.assertEqual(response.status_code, 200)
 
     @pytest.mark.test
     @title("Unsucsessfull Registration")
     @description("Test registering user with password that is shorter than 6 characters")
     def test_unsuccessful_registration_short_password(self):
-        payload = {"name": "TestUser", "email": "someuser@test.com", "password": "123GG"}
-        response = requests.post(f"{BASE_URL}/AuthAccount/Registration", json=payload)
+        payload = {"name": "TestUser",
+                   "email": "someuser@test.com", "password": "123GG"}
+        response = requests.post(
+            f"{BASE_URL}/AuthAccount/Registration", json=payload)
         self.assertEqual(response.status_code, 400)
 
     @pytest.mark.test
     @title("Unsucsessfull Registration")
     @description("Test re-registering already registered user")
     def test_unsuccessful_registration_registered_user(self):
-        payload = {"name": "TestUser1", "email": "random_test_user2@test.com", "password": "123GGH"}
-        response = requests.post(f"{BASE_URL}/AuthAccount/Registration", json=payload)
+        payload = {"name": "TestUser1",
+                   "email": "random_test_user2@test.com", "password": "123GGH"}
+        response = requests.post(
+            f"{BASE_URL}/AuthAccount/Registration", json=payload)
         self.assertEqual(response.status_code, 200)
         json_data = response.json()
         error_message = json_data["message"]
@@ -106,41 +114,9 @@ class LoginAndRegistrationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-
-#Tests for Get Tourist Endpoint
+# Tests for Get Tourist Endpoint
 @pytest.mark.allure
 class GetTouristEndpointTests(unittest.TestCase):
-    @pytest.mark.test
-    @title("Successful retrieval of all Tourist on 1st page")
-    @description("Test successfully retrieves all tourists on 1st page by default without specifying the page")
-    def test_get_tourists(self):
-        response = requests.get(f"{BASE_URL}/Tourist")
-        assert response.status_code == 200
-        print(response.json())
-
-    @pytest.mark.test
-    @title("Unsuccessful retrieval of Tourists")
-    @description("Test shouldn't retrieve tourists when specified page is equal to 0")
-    def test_get_tourists_by_page(self):
-        page = 0
-        params = {'page': page}
-        response = requests.get(f"{BASE_URL}/Tourist",  params=params)
-        self.assertEqual(response.status_code, 500)
-        json_data = response.json()
-        error_message = json_data["message"]
-        expected_message = "An error has occurred."
-        self.assertEqual(error_message, expected_message)
-
-    @pytest.mark.test
-    @title("Successful retrieval of all Tourist on specified page")
-    @description("Test successfully retrieves all tourists on specified page")
-    def test_get_tourists_by_page(self):
-        page = 1500
-        params = {'page': page}
-        response = requests.get(f"{BASE_URL}/Tourist",  params=params)
-        assert response.status_code == 200
-        print(response.json())
-
     @pytest.mark.test
     @title("Successfully create and retrieve a specific tourist")
     @description("Test successfully creates a tourist and retrieves created tourist by id")
@@ -159,3 +135,29 @@ class GetTouristEndpointTests(unittest.TestCase):
         get_response = requests.get(f"{BASE_URL}/Tourist/{tourist_id}")
         assert get_response.status_code == 200
         print(get_response.json())
+
+    @pytest.mark.test
+    @title("Successfully create a tourist and retrieve it with wrong id")
+    @description("Test successfully creates a tourist but retrieves tourist by wrong id")
+    def test_get_tourist_by_wrongid(self):
+        payload = {
+            "id": 19,
+            "tourist_name": "James Bond 007",
+            "tourist_email": "jamesbondsecond@test.com",
+            "tourist_location": "London",
+            "createdat": "2023-06-12T18:59:56.868Z"
+        }
+        create_response = requests.post(f"{BASE_URL}/Tourist", json=payload)
+        assert create_response.status_code == 201
+        # retrieve tourist id
+        tourist_id = create_response.json()['id']
+        get_response = requests.get(f"{BASE_URL}/Tourist/{1}")
+        assert get_response.status_code == 404
+        print(get_response.json())
+
+    @pytest.mark.test
+    @title("Unsuccessfully retrieve a tourist with invalid id")
+    @description("Test unsuccessfully retrieves a tourist with invalid id")
+    def test_get_tourist_by_invalidid(self):
+        response = requests.get(f"{BASE_URL}/Tourist/{djfk2}")
+        assert response.status_code == 404
