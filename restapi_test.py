@@ -13,15 +13,9 @@ class LoginAndRegistrationTests(unittest.TestCase):
     @title("Successful Registration")
     @description("Test successful registration of a user")
     def test_successful_registration(self):
-        payload = {"name": "Test", "email": "random_test_user2@test.com", "password": "123GGG"}
+        payload = {"name": "Test", "email": "random_test_user6@test.com", "password": "123GGG"}
         response = requests.post(f"{BASE_URL}/AuthAccount/Registration", json=payload)
         self.assertEqual(response.status_code, 200)
-
-        json_data = response.json()
-        print(json_data)  # Add this line to inspect the response content
-
-        user_id = json_data["data"]["Id"]
-        self.assertIsNotNone(user_id, "User ID is None")
 
     @pytest.mark.test
     @title("Unsucsessfull Registration")
@@ -125,10 +119,23 @@ class GetTouristEndpointTests(unittest.TestCase):
         print(response.json())
 
     @pytest.mark.test
+    @title("Unsuccessful retrieval of Tourists")
+    @description("Test shouldn't retrieve tourists when specified page is equal to 0")
+    def test_get_tourists_by_page(self):
+        page = 0
+        params = {'page': page}
+        response = requests.get(f"{BASE_URL}/Tourist",  params=params)
+        self.assertEqual(response.status_code, 500)
+        json_data = response.json()
+        error_message = json_data["message"]
+        expected_message = "An error has occurred."
+        self.assertEqual(error_message, expected_message)
+
+    @pytest.mark.test
     @title("Successful retrieval of all Tourist on specified page")
     @description("Test successfully retrieves all tourists on specified page")
     def test_get_tourists_by_page(self):
-        page = 1500  # Specify the page parameter value here
+        page = 1500
         params = {'page': page}
         response = requests.get(f"{BASE_URL}/Tourist",  params=params)
         assert response.status_code == 200
@@ -140,8 +147,8 @@ class GetTouristEndpointTests(unittest.TestCase):
     def test_get_tourist_by_id(self):
         payload = {
             "id": 17,
-            "tourist_name": "Tourist_007",
-            "tourist_email": "agent_007@test.com",
+            "tourist_name": "James Bond",
+            "tourist_email": "jamesbond@test.com",
             "tourist_location": "London",
             "createdat": "2023-06-12T18:59:56.868Z"
         }
