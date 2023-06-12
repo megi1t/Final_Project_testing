@@ -143,7 +143,7 @@ class GetTouristEndpointTests(unittest.TestCase):
         payload = {
             "id": 19,
             "tourist_name": "James Bond 007",
-            "tourist_email": "jamesbondtest1@test.com",
+            "tourist_email": "jamesbondtest11@test.com",
             "tourist_location": "London",
             "createdat": "2023-06-12T18:59:56.868Z"
         }
