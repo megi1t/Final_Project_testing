@@ -3,7 +3,7 @@ name: Python CI
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
           python-version: 3.10
@@ -27,25 +27,24 @@ jobs:
           exit_code=$?
           exit $exit_code
 
-      - name: Retrieve Allure history
+      - name: Get Allure history
         uses: actions/checkout@v2
+        if: always()
+        continue-on-error: true
         with:
           ref: gh-pages
-          path: allure-history
+          repository: ${{ github.repository }}
+          path: gh-pages
 
-      - name: Generate Allure report
-        run: |
-          wget https://github.com/allure-framework/allure2/releases/download/2.14.0/allure-2.14.0.tgz
-          tar -zxvf allure-2.14.0.tgz
-          export PATH="$(pwd)/allure-2.14.0/bin:$PATH"
-          allure --version
-          allure generate --clean -o allure-report ./allure-results
-
-      - name: Generate Allure report (GitHub)
+      - name: Allure Report
         uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
         with:
-          version: 2.x
-          results: allure-results
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
 
       - name: Deploy report to GitHub Pages
         if: always()
