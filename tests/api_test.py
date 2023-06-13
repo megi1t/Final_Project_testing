@@ -1,5 +1,7 @@
 import requests
 import unittest
+import pytest
+import sys
 from allure_commons._allure import title, description
 
 BASE_URL = "http://restapi.adequateshop.com/api"
@@ -145,4 +147,12 @@ class GetTouristEndpointTests(unittest.TestCase):
         error_message = json_data["Message"]
         expected_message = "The request is invalid."
         self.assertEqual(error_message, expected_message)
+
+
+if __name__ == "__main__":
+    # Run the tests using pytest
+    result = pytest.main(["-qq", "--tb=no", __file__])
+
+    # Exit with appropriate status code based on test result
+    sys.exit(int(result != 0))
 
