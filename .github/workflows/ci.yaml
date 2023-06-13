@@ -18,6 +18,11 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Clear pip cache
+        run: |
+            pip cache purge
+            pip cache dir
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
