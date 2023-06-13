@@ -23,7 +23,7 @@ lib64/
 bin/
 include/
 
-#test results
+#Test results
 allure-results/
 htmlcov/
 .tox/
