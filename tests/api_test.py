@@ -1,4 +1,3 @@
-import pytest
 import requests
 import unittest
 from allure_commons._allure import title, description
@@ -11,7 +10,7 @@ class LoginAndRegistrationTests(unittest.TestCase):
     @description("Test successful registration of a user")
     def test_successful_registration(self):
         payload = {"name": "Test",
-                   "email": "test456454@test.com",
+                   "email": "test00000@test.com",
                    "password": "123GGG"}
         response = requests.post(
             f"{BASE_URL}/AuthAccount/Registration", json=payload)
@@ -117,7 +116,7 @@ class GetTouristEndpointTests(unittest.TestCase):
         payload = {
             "id": 17,
             "tourist_name": "James Bond",
-            "tourist_email": "test4564545@test.com",
+            "tourist_email": "test00002@test.com",
             "tourist_location": "London",
             "createdat": "2023-06-12T18:59:56.868Z"
         }
