@@ -21,7 +21,8 @@ test_successful_registration and test_get_tourist_by_id unless you change creden
 CI/CD Pipelines:
 [Run URL 
 ](https://github.com/megi1t/Final_Project_testing/actions/runs/5253908641/jobs/9491839161)
-
+![img_1.png](img_1.png)
 
 Allure report:
+![img.png](img.png)
 
